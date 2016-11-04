@@ -31,7 +31,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MiFrame extends javax.swing.JFrame {
     
-     Connection conn1 = null;
+    conexiones gesCon = new conexiones();
      DefaultTableModel modeloTabla;
        Statement sta;
     
@@ -216,39 +216,17 @@ public class MiFrame extends javax.swing.JFrame {
     public void mostrarCancionesAlbum(){
     
     }
-    public void GestorConexion() {
-       
-        try {
-        String url1 = "jdbc:mysql://localhost:3306/discografia";
-        String user = "root";
-        String password = "root";
-        conn1 = (Connection) DriverManager.getConnection(url1, user, password);
-        if (conn1 != null) {
-        System.out.println("Conectado a discográfica…");
-        }
-        } catch (SQLException ex) {
-        System.out.println("ERROR: dirección o usuario/clave no válida");
-        ex.printStackTrace();
-        }
- } 
-    public void cerrar_conexion() {
-        try {
-         conn1.close();
-        } catch (SQLException ex) {
-         System.out.println("ERROR:al cerrar la conexión");
-         ex.printStackTrace();
-         }
-} 
+   
     public void consulta_Statement(String pregunta, JTable tabla) {
         
-        GestorConexion();
+        gesCon.GestorConexion();
         try {
             //Para establecer el modelo al JTable
             DefaultTableModel modelo = new DefaultTableModel();
             tabla.setModel(modelo);
 
             //Para ejecutar la consulta
-            Statement s = conn1.createStatement();
+            Statement s = gesCon.conn1.createStatement();
             //Ejecutamos la consulta que escribimos en la caja de texto
             //y los datos lo almacenamos en un ResultSet
             ResultSet rs = s.executeQuery(pregunta);
@@ -269,12 +247,12 @@ public class MiFrame extends javax.swing.JFrame {
              modelo.addRow(fila);
             }
             rs.close();
-            conn1.close();
+            gesCon.conn1.close();
            } catch (Exception ex) {
             ex.printStackTrace();
            }
 
-            cerrar_conexion();
+            gesCon.cerrar_conexion();
         
               
 }
@@ -288,11 +266,11 @@ public class MiFrame extends javax.swing.JFrame {
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String nombreColumna = "";
-        GestorConexion();
+        gesCon.GestorConexion();
         nombreColumna = JOptionPane.showInputDialog("Please input mark for test 1: ");
         try {
       
-             sta = conn1.createStatement();
+             sta =  gesCon.conn1.createStatement();
    sta.executeUpdate("ALTER TABLE album ADD " + nombreColumna + " varchar(255);");
     sta.close(); 
          } catch (Exception ex) {
@@ -300,7 +278,7 @@ public class MiFrame extends javax.swing.JFrame {
            
            }
         consulta_Statement("select * from album",jtQuery);
-        cerrar_conexion();
+         gesCon.cerrar_conexion();
      
 
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -314,11 +292,11 @@ public class MiFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        GestorConexion();
+        
         InsertarCancion hehe = new InsertarCancion();
-        hehe.conn1 = conn1;
-         hehe.setEnabled(true);
+           
         hehe.setVisible(true);
+         hehe.setEnabled(true);
         
        
     }//GEN-LAST:event_jButton5ActionPerformed
