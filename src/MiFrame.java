@@ -1,6 +1,8 @@
 
 import com.mysql.jdbc.Connection;
 import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -8,6 +10,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -27,13 +33,31 @@ public class MiFrame extends javax.swing.JFrame {
     
      Connection conn1 = null;
      DefaultTableModel modeloTabla;
+       Statement sta;
     
     /**
      * Creates new form MiFrame
      */
-    public MiFrame() {
-        initComponents();
+    public MiFrame() {        
+        initComponents();  
+        this.setLocationRelativeTo(null);
+        consulta_Statement("select * from album",jtQuery1);
+        consulta_Statement("select * from cancion", jtQuery);
+        jtQuery1.addMouseListener(new MouseAdapter() {
+             public void mouseClicked(MouseEvent e) {   
+                JTable target = (JTable)e.getSource();
+                int row = target.getSelectedRow();
+                int id = (int)jtQuery1.getModel().getValueAt(row,0);
+
+                 consulta_Statement("select * from cancion where album = " + id, jtQuery);     
+       
+      // do some action if appropriate column
+    
+  }
+        });
+     
     }
+    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -49,24 +73,30 @@ public class MiFrame extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         jtQuery = new javax.swing.JTable();
+        jButton3 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jtQuery1 = new javax.swing.JTable();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("jButton1");
+        jButton1.setText("Añadir Columna");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("jButton2");
+        jButton2.setText("Consulta");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
-
-        jTextField1.setText("jTextField1");
 
         jtQuery.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -81,50 +111,117 @@ public class MiFrame extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(jtQuery);
 
+        jButton3.setText("Eliminar Columna");
+
+        jtQuery1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(jtQuery1);
+
+        jButton4.setText("Añadir Columna");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setText("Eliminar Columna");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jButton6.setText("Consulta");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/manzanita.jpg"))); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addContainerGap(118, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(35, 35, 35))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(109, 109, 109)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(126, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton4)
+                                .addGap(58, 58, 58)
+                                .addComponent(jButton5))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 753, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton1)
+                                .addGap(58, 58, 58)
+                                .addComponent(jButton3))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 753, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(108, 108, 108))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(335, 335, 335))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(15, 15, 15)
+                .addGap(31, 31, 31)
+                .addComponent(jLabel2)
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton1)
+                        .addComponent(jButton3)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addComponent(jButton6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addGap(28, 28, 28)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(114, Short.MAX_VALUE))
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4)
+                    .addComponent(jButton5))
+                .addGap(4, 4, 4)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(79, 79, 79))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
+    
+    public void mostrarCancionesAlbum(){
+    
+    }
     public void GestorConexion() {
        
         try {
         String url1 = "jdbc:mysql://localhost:3306/discografia";
         String user = "root";
-        String password = "";
+        String password = "root";
         conn1 = (Connection) DriverManager.getConnection(url1, user, password);
         if (conn1 != null) {
         System.out.println("Conectado a discográfica…");
@@ -142,54 +239,89 @@ public class MiFrame extends javax.swing.JFrame {
          ex.printStackTrace();
          }
 } 
-    public void consulta_Statement() {
+    public void consulta_Statement(String pregunta, JTable tabla) {
         
         GestorConexion();
         try {
- //Para establecer el modelo al JTable
- DefaultTableModel modelo = new DefaultTableModel();
- this.jtQuery.setModel(modelo);
+            //Para establecer el modelo al JTable
+            DefaultTableModel modelo = new DefaultTableModel();
+            tabla.setModel(modelo);
 
- //Para ejecutar la consulta
- Statement s = conn1.createStatement();
- //Ejecutamos la consulta que escribimos en la caja de texto
- //y los datos lo almacenamos en un ResultSet
- ResultSet rs = s.executeQuery(jTextField1.getText());
- //Obteniendo la informacion de las columnas que estan siendo consultadas
- ResultSetMetaData rsMd = rs.getMetaData();
- //La cantidad de columnas que tiene la consulta
- int cantidadColumnas = rsMd.getColumnCount();
- //Establecer como cabezeras el nombre de las colimnas
- for (int i = 1; i <= cantidadColumnas; i++) {
-  modelo.addColumn(rsMd.getColumnLabel(i));
- }
- //Creando las filas para el JTable
- while (rs.next()) {
-  Object[] fila = new Object[cantidadColumnas];
-  for (int i = 0; i < cantidadColumnas; i++) {
-    fila[i]=rs.getObject(i+1);
-  }
-  modelo.addRow(fila);
- }
- rs.close();
- conn1.close();
-} catch (Exception ex) {
- ex.printStackTrace();
-}
+            //Para ejecutar la consulta
+            Statement s = conn1.createStatement();
+            //Ejecutamos la consulta que escribimos en la caja de texto
+            //y los datos lo almacenamos en un ResultSet
+            ResultSet rs = s.executeQuery(pregunta);
+            //Obteniendo la informacion de las columnas que estan siendo consultadas
+            ResultSetMetaData rsMd = rs.getMetaData();
+            //La cantidad de columnas que tiene la consulta
+            int cantidadColumnas = rsMd.getColumnCount();
+            //Establecer como cabezeras el nombre de las colimnas
+            for (int i = 1; i <= cantidadColumnas; i++) {
+             modelo.addColumn(rsMd.getColumnLabel(i));
+            }
+            //Creando las filas para el JTable
+            while (rs.next()) {
+             Object[] fila = new Object[cantidadColumnas];
+             for (int i = 0; i < cantidadColumnas; i++) {
+               fila[i]=rs.getObject(i+1);
+             }
+             modelo.addRow(fila);
+            }
+            rs.close();
+            conn1.close();
+           } catch (Exception ex) {
+            ex.printStackTrace();
+           }
 
-        cerrar_conexion();
+            cerrar_conexion();
         
               
 }
+    
   
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-       consulta_Statement();
+       consulta_Statement(jTextField1.getText(),jtQuery);
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        consulta_Statement();
+        String nombreColumna = "";
+        GestorConexion();
+        nombreColumna = JOptionPane.showInputDialog("Please input mark for test 1: ");
+        try {
+      
+             sta = conn1.createStatement();
+   sta.executeUpdate("ALTER TABLE album ADD " + nombreColumna + " varchar(255);");
+    sta.close(); 
+         } catch (Exception ex) {
+            ex.printStackTrace();
+           
+           }
+        consulta_Statement("select * from album",jtQuery);
+        cerrar_conexion();
+     
+
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        GestorConexion();
+        InsertarCancion hehe = new InsertarCancion();
+        hehe.conn1 = conn1;
+         hehe.setEnabled(true);
+        hehe.setVisible(true);
+        
+       
+    }//GEN-LAST:event_jButton5ActionPerformed
     
     /**
      * @param args the command line arguments
@@ -229,8 +361,16 @@ public class MiFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JTable jtQuery;
+    private javax.swing.JTable jtQuery1;
     // End of variables declaration//GEN-END:variables
 }
