@@ -37,12 +37,14 @@ public class InsertarCancion extends javax.swing.JFrame {
         
          System.out.println(pat);
          jComboBox1.removeAllItems();
-         jComboBox1.addItem("Nuevo Album");
+        
         while (rs.next()) {
              pat = rs.getInt("id");   
              jComboBox1.addItem(String.valueOf(pat));       
 
         }
+         jComboBox1.addItem("Nuevo Album");
+         
 
     } catch (Exception e) {
 
@@ -59,15 +61,13 @@ public class InsertarCancion extends javax.swing.JFrame {
                 // Get the source of the component, which is our combo
                 // box.
                 //
-                
-
                 Object selected = jComboBox1.getSelectedItem();
                 if(!selected.toString().equals("Nuevo Album")){
                     jTextField5.setEnabled(false);
-                    jTextField6.setEnabled(false);
-                    jTextField7.setEnabled(false);
-                    
-                    
+                   jTextField6.setEnabled(false);
+                    jTextField7.setEnabled(false);                
+               
+             
                 }else{
                     jTextField5.setEnabled(true);
                     jTextField6.setEnabled(true);
@@ -137,11 +137,17 @@ public class InsertarCancion extends javax.swing.JFrame {
 
         jLabel5.setText("Album");
 
+        jTextField5.setEnabled(false);
+
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jTextArea2.setColumns(20);
         jTextArea2.setRows(5);
         jScrollPane2.setViewportView(jTextArea2);
+
+        jTextField6.setEnabled(false);
+
+        jTextField7.setEnabled(false);
 
         jLabel6.setText("id");
 
@@ -168,19 +174,16 @@ public class InsertarCancion extends javax.swing.JFrame {
                         .addGap(40, 40, 40)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(118, 118, 118)
-                                        .addComponent(jLabel2))
-                                    .addComponent(jLabel3)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(160, 160, 160))
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(118, 118, 118)
+                                .addComponent(jLabel2))
+                            .addComponent(jLabel3)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(67, 67, 67)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(160, 160, 160)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextField6)
                             .addComponent(jTextField7)
@@ -253,15 +256,31 @@ public class InsertarCancion extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
       
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    
+ 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
          String titulo = jTextField1.getText();
         String duracion = jTextField2.getText();
         String letras = jTextArea2.getText();
         int id = Integer.parseInt(jTextField4.getText());
-        int album = Integer.parseInt(jTextField5.getText());
+        String albu = (String)jComboBox1.getSelectedItem();
+        int album = Integer.parseInt(albu) ;
+     
+       
+      
+        
         gesCon.GestorConexion();
-        gesCon.insertar_con_commit(titulo,duracion,letras,id,album);
+        // Comprobamos si se va a relizar una insercion de solo cancion o cancion y album y en funcion de esto
+        //utilizamos un metodo u otro
+        Object selected = jComboBox1.getSelectedItem();
+                if(!selected.toString().equals("Nuevo Album")){
+        gesCon.insertar(titulo,duracion,letras,id,album);
+                } else {
+                     String _titulo = jTextField7.getText();
+                       int _album = Integer.parseInt(jTextField6.getText());
+                         int _publicacion = Integer.parseInt(jTextField5.getText());
+                gesCon.insertar_con_commit(titulo, duracion, letras, id, album, _album, _publicacion,_titulo);
+                }
         gesCon.cerrar_conexion();
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
